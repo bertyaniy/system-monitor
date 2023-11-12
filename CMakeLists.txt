@@ -8,10 +8,12 @@ set(SOURCES
         src/main.cpp
         src/builder.cpp
         src/memory/memory.cpp
+        src/cpu/cpu.cpp
         )
 
 set(HEADERS 
         includes/memory.h
+        includes/cpu.h
         includes/builder.h)
 
 

@@ -7,7 +7,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <cpuid.h>
 
 class Memory {
     public: 
@@ -16,8 +15,6 @@ class Memory {
             float mem_total;
             float mem_available;
             float mem_used;
-            char* mem_name;
-            float mem_speed;
         };
         Memory_Info get_memory_info();
 
