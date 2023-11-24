@@ -12,7 +12,7 @@ Memory::Memory_Info Memory::get_memory_info() {
     }
 
     std::string line, label;
-    std::uint64_t value;
+    float value;
 
     while (std::getline(ifs, line)) {
         std::stringstream ss{line};
