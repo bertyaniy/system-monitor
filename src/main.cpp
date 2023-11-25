@@ -1,9 +1,12 @@
-#include "../includes/builder.h"
+#include "../includes/tui.h"
+#include "../includes/cpu.h"
+#include "../includes/memory.h"
 
 int main() {
-    Builder builder;
 
-    builder.update_loop();
+    TUI tui;
 
+    tui.generate_screen(Memory::Memory_Info memory_info, );
+    
     return 0;
 }

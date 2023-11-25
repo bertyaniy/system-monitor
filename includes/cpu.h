@@ -19,11 +19,9 @@ class CPU {
         };
         
         CPU_Info get_cpu_info();
-        float get_cpu_usage();
-        std::vector<long> get_cpu_times();
-        bool parse_cpu_line(std::stringstream& ss, std::vector<long>& cpu_times);
     
     private:
+        float get_cpu_usage();
         const char* cpu_info_file;
         const char* cpu_usage_file;
         const double factor;

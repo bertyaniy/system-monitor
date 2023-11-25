@@ -36,65 +36,41 @@ CPU::CPU_Info CPU::get_cpu_info() {
 
     cpu_i_ifs.close();
     cpu_info.usage = get_cpu_usage();
+    std::cout << cpu_info.usage << std::endl;
     return cpu_info;
 }
 
 float CPU::get_cpu_usage() {
-    std::vector<long> initial_cpu_times = get_cpu_times();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::vector<long> final_cpu_times = get_cpu_times();
-
-    if (initial_cpu_times.size() != final_cpu_times.size()) {
-        std::cerr << "Error: unable to calculate CPU usage" << std::endl;
-        return 1.0;
-    }
-
-    long total_initial = std::accumulate(initial_cpu_times.begin(), initial_cpu_times.end(), 0L);
-    long total_final = std::accumulate(final_cpu_times.begin(), final_cpu_times.end(), 0L);
-
-    if (total_initial == total_final) {
-        std::cerr << "Error: total CPU time did not change" << std::endl;
-        return 2.0;
-    }
-
-    long usage_diff = total_final - total_initial;
-    float usage_percentage = 100.0 * static_cast<float>(usage_diff) / (total_final - total_initial);
-
-    return usage_percentage;
-}
-
-std::vector<long> CPU::get_cpu_times() {
     auto cpu_u_ifs = std::ifstream(cpu_usage_file);
-    std::vector<long> cpu_times;
 
-    std::string line, label;
+    std::string line;
+    std::getline(cpu_u_ifs, line);
 
-    while (std::getline(cpu_u_ifs, line)) {
-        std::stringstream ss{line};
-
-        ss >> label;
-
-        if (label == "cpu" && !parse_cpu_line(ss, cpu_times)) {
-            break;
-        }
-    }
-
-    cpu_u_ifs.close();
-    return cpu_times;
-}
-
-bool CPU::parse_cpu_line(std::stringstream& ss, std::vector<long>& cpu_times) {
+    std::stringstream ss{line};
     std::string label;
 
-    while (ss >> label) {
-        if (label.find("cpu") == std::string::npos) {
-            return false;
-        }
+    ss >> label;
+    if (label != "cpu") {
+        return 1.0f;
     }
 
-    long time;
-    while (ss >> time) {
-        cpu_times.push_back(time);
-    }
-    return true;
+    int user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
+    ss >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+    
+    int idle_time = idle + iowait;
+    int total_time = user + nice + system + idle + iowait + irq + softirq + steal;
+
+    static int prev_idle_time = idle_time;
+    static int prev_total_time = total_time;
+
+    int idle_time_delta = idle_time - prev_idle_time;
+    int total_time_delta = total_time - prev_total_time;
+
+    prev_idle_time = idle_time;
+    prev_total_time = total_time;
+
+    float usage = 100.0f * (1.0f - (idle_time_delta / static_cast<float>(total_time_delta)));
+
+    return usage;
+
 }

@@ -19,7 +19,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCES
         src/main.cpp
-        src/builder.cpp
         src/memory/memory.cpp
         src/cpu/cpu.cpp
         src/tui/tui.cpp
@@ -28,7 +27,6 @@ set(SOURCES
 set(HEADERS 
         includes/memory.h
         includes/cpu.h
-        includes/builder.h
         includes/tui.h)
 
 
